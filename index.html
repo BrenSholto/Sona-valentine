@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Valentine?</title>
+
+  <style>
+    body {
+      height: 100vh;
+      margin: 0;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      background: linear-gradient(135deg, #ffe6f0, #fff);
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: clamp(1.6rem, 6vw, 2.5rem);
+      margin-bottom: 30px;
+    }
+
+    .buttons {
+      position: relative;
+      width: 100%;
+      max-width: 320px;
+      height: 200px;
+    }
+
+    button {
+      padding: 14px 28px;
+      font-size: 1.1rem;
+      border-radius: 12px;
+      cursor: pointer;
+      position: absolute;
+      touch-action: manipulation;
+    }
+
+    #yes {
+      background-color: pink;
+      border: none;
+      left: 10%;
+      bottom: 30px;
+    }
+
+    #yes:hover {
+      transform: scale(1.1);
+    }
+
+    #no {
+      background-color: white;
+      border: 2px solid #ccc;
+      right: 10%;
+      bottom: 30px;
+    }
+
+    .message {
+      display: none;
+      font-size: clamp(1.8rem, 6vw, 2.6rem);
+      color: #ff4d88;
+      animation: pop 0.6s ease forwards;
+    }
+
+    @keyframes pop {
+      from { transform: scale(0.5); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .heart {
+      position: fixed;
+      color: pink;
+      animation: float 4s linear infinite;
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    @keyframes float {
+      from { transform: translateY(100vh); }
+      to { transform: translateY(-10vh); }
+    }
+
+    .confetti {
+      position: fixed;
+      width: 8px;
+      height: 8px;
+      animation: fall 3s linear forwards;
+    }
+
+    @keyframes fall {
+      from { transform: translateY(-10vh) rotate(0deg); }
+      to { transform: translateY(110vh) rotate(720deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <h1 id="question">Sona, will you be my valentine ?</h1>
+
+  <div class="buttons" id="buttons">
+    <button id="yes">Yes</button>
+    <button id="no">No</button>
+  </div>
+
+  <div class="message" id="message">YAY 💖 I knew it!</div>
+
+  <script>
+    const noBtn = document.getElementById("no");
+    const yesBtn = document.getElementById("yes");
+    const question = document.getElementById("question");
+    const buttons = document.getElementById("buttons");
+    const message = document.getElementById("message");
+
+    let speed = 1;
+
+    function moveNoButton() {
+      speed += 0.15;
+
+      const containerRect = buttons.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const maxX = containerRect.width - btnRect.width;
+      const maxY = containerRect.height - btnRect.height;
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
+      noBtn.style.transition =
+        `left ${0.25 / speed}s ease, top ${0.25 / speed}s ease`;
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    // Desktop hover
+    noBtn.addEventListener("mouseenter", moveNoButton);
+
+    // Mobile touch
+    noBtn.addEventListener("touchstart", (e) => {
+      e.preventDefault();
+      moveNoButton();
+    });
+
+    yesBtn.addEventListener("click", () => {
+      question.style.display = "none";
+      buttons.style.display = "none";
+      message.style.display = "block";
+      spawnConfetti();
+    });
+
+    function spawnConfetti() {
+      for (let i = 0; i < 120; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.backgroundColor =
+          ["#ff4d88", "#ffd1dc", "#ff99cc"][Math.floor(Math.random() * 3)];
+        c.style.animationDuration = 2 + Math.random() * 2 + "s";
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 4000);
+      }
+    }
+
+    // Floating hearts background
+    setInterval(() => {
+      const heart = document.createElement("div");
+      heart.className = "heart";
+      heart.textContent = "❤";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = 16 + Math.random() * 20 + "px";
+      document.body.appendChild(heart);
+      setTimeout(() => heart.remove(), 4000);
+    }, 450);
+  </script>
+
+</body>
+</html>
